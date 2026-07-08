@@ -39,6 +39,24 @@ QWeb.registerTemplate('camlait_dashboard.Main', `
                 <button t-att-class="'camlait_period_btn' + (state.activePeriod==='mois'?' active':'')" t-on-click="setPeriodMois">Mois</button>
                 <button t-att-class="'camlait_period_btn' + (state.activePeriod==='trim'?' active':'')" t-on-click="setPeriodTrim">Trim.</button>
                 <button t-att-class="'camlait_period_btn' + (state.activePeriod==='annee'?' active':'')" t-on-click="setPeriodAnnee">Annee</button>
+
+                <span class="camlait_period_sep"/>
+
+                <div class="camlait_daterange">
+                    <label class="camlait_daterange_label">Du</label>
+                    <input type="date"
+                        class="camlait_daterange_input"
+                        t-att-value="state.dateFrom"
+                        t-att-max="state.dateTo"
+                        t-on-change="onDateFromChange"/>
+                    <label class="camlait_daterange_label">Au</label>
+                    <input type="date"
+                        class="camlait_daterange_input"
+                        t-att-value="state.dateTo"
+                        t-att-min="state.dateFrom"
+                        t-att-max="state._today ? state._today : ''"
+                        t-on-change="onDateToChange"/>
+                </div>
             </div>
             <button class="camlait_icon_btn" title="Telechargement">
                 <i class="fa fa-download"/>
@@ -619,6 +637,9 @@ class CamlaitDashboard extends Component {
             commandes_recentes: [],
             alertes: [],
             repartition_canal: [],
+            customDay:   String(new Date().getDate()).padStart(2, '0'),
+            customMonth: String(new Date().getMonth() + 1).padStart(2, '0'),
+            customYear:  String(new Date().getFullYear()),
         });
     }
 
@@ -690,8 +711,79 @@ class CamlaitDashboard extends Component {
     }
     setPeriodAnnee() { this._setPeriod('annee', `${new Date().getFullYear()}-01-01`, this._today()); }
 
+    async onDateFromChange(ev) {
+        const val = ev.target.value;
+        if (!val) return;
+        this.state.dateFrom    = val;
+        this.state.activePeriod = 'custom';
+        await this._loadData();
+    }
+
+    async onDateToChange(ev) {
+        const val = ev.target.value;
+        if (!val) return;
+        this.state.dateTo      = val;
+        this.state.activePeriod = 'custom';
+        await this._loadData();
+    }
+    // ── Sélecteurs de date personnalisés ─────────────────────────
+    onCustomDayChange(ev) {
+        const val = ev.target.value;
+        if (val && parseInt(val) >= 1 && parseInt(val) <= 31) {
+            this.state.customDay = String(parseInt(val)).padStart(2, '0');
+        }
+    }
+
+    onCustomMonthChange(ev) {
+        this.state.customMonth = ev.target.value;
+        // Mettre à jour customDay si le mois change
+        // (ex: éviter le 31 en février)
+        const maxDay = new Date(
+            parseInt(this.state.customYear),
+            parseInt(this.state.customMonth),
+            0
+        ).getDate();
+        if (parseInt(this.state.customDay) > maxDay) {
+            this.state.customDay = String(maxDay).padStart(2, '0');
+        }
+    }
+
+    onCustomYearChange(ev) {
+        const val = ev.target.value;
+        if (val && parseInt(val) >= 2020 && parseInt(val) <= 2099) {
+            this.state.customYear = val;
+        }
+    }
+
+    async applyCustomDate() {
+        const day   = this.state.customDay;
+        const month = this.state.customMonth;
+        const year  = this.state.customYear;
+
+        // Construire les dates : du 1er du mois au jour sélectionné
+        const dateFrom = `${year}-${month}-01`;
+        const dateTo   = `${year}-${month}-${day}`;
+
+        // Valider que dateTo est une date réelle
+        const d = new Date(dateTo);
+        if (isNaN(d.getTime())) {
+            console.warn('Date invalide :', dateTo);
+            return;
+        }
+
+        await this._setPeriod('custom', dateFrom, dateTo);
+    }
+
     periodLabel() {
-        const map = { '7j':'7 derniers jours', 'mois':'Mois en cours', 'trim':'Trimestre en cours', 'annee':'Annee en cours' };
+        if (this.state.activePeriod === 'custom') {
+            return this.state.dateFrom + ' au ' + this.state.dateTo;
+        }
+        const map = {
+            '7j':   '7 derniers jours',
+            'mois': 'Mois en cours',
+            'trim': 'Trimestre en cours',
+            'annee':'Annee en cours',
+        };
         return map[this.state.activePeriod] || 'Periode';
     }
 

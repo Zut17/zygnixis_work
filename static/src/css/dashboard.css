@@ -736,3 +736,130 @@
 .camlait_topbar { padding: 16px 26px; }
 .camlait_tabs { padding: 0 26px; }
 .camlait_card_header { margin-bottom: 18px; padding-bottom: 14px; }
+
+/* ── Sélecteurs date personnalisés ──────────────────────────── */
+.camlait_period_sep {
+    color: #334155;
+    font-size: 18px;
+    line-height: 1;
+    margin: 0 4px;
+    align-self: center;
+}
+
+.camlait_date_pickers {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.camlait_date_field {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.camlait_date_label {
+    font-size: 9px;
+    font-weight: 600;
+    color: #64748b;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: var(--cdash-font, 'Roboto', sans-serif);
+}
+
+.camlait_date_input {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    color: #e2e8f0;
+    font-size: 12px;
+    font-family: var(--cdash-font, 'Roboto', sans-serif);
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.camlait_date_input:focus {
+    border-color: #6366f1;
+}
+
+.camlait_day_input {
+    width: 44px;
+    padding: 5px 6px;
+    text-align: center;
+}
+
+.camlait_year_input {
+    width: 62px;
+    padding: 5px 6px;
+    text-align: center;
+}
+
+.camlait_select_input {
+    width: 58px;
+    padding: 5px 4px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    text-align: center;
+}
+
+/* Enlève les flèches sur les input number */
+.camlait_day_input::-webkit-outer-spin-button,
+.camlait_day_input::-webkit-inner-spin-button,
+.camlait_year_input::-webkit-outer-spin-button,
+.camlait_year_input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.camlait_apply_btn {
+    padding: 5px 10px;
+    font-size: 12px;
+    align-self: flex-end;
+}
+
+/* ── Séparateur période / plage de dates ─────────────────────── */
+.camlait_period_sep {
+    display: inline-block;
+    width: 1px;
+    height: 20px;
+    background: #334155;
+    margin: 0 8px;
+    align-self: center;
+    flex-shrink: 0;
+}
+
+/* ── Plage de dates Du / Au ──────────────────────────────────── */
+.camlait_daterange {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.camlait_daterange_label {
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 500;
+    font-family: var(--cdash-font, 'Roboto', sans-serif);
+    flex-shrink: 0;
+}
+
+.camlait_daterange_input {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    color: #e2e8f0;
+    padding: 5px 8px;
+    font-size: 12px;
+    font-family: var(--cdash-font, 'Roboto', sans-serif);
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    /* Supprime le fond blanc natif sur Chrome */
+    color-scheme: dark;
+}
+
+.camlait_daterange_input:focus,
+.camlait_daterange_input:hover {
+    border-color: #6366f1;
+}
