@@ -1,0 +1,382 @@
+/* ══════════════════════════════════════════════════════════════
+   Camlait Dashboard — CSS aligne sur la maquette reelle
+   Palette mesuree directement sur les pixels des maquettes fournies :
+   fond anthracite chaud quasi-noir + badges d'icones pastel clairs
+   avec glyphe sature (pas de badges sombres).
+   ══════════════════════════════════════════════════════════════ */
+
+.camlait_dashboard_root {
+    --cdash-font: var(--o-font-family, 'Roboto', 'Noto Sans', sans-serif);
+
+    /* Fonds - mesures sur la maquette : #141412 (page) / #2d2d2b (cartes) */
+    --cdash-bg: #141412;
+    --cdash-bg-topbar: #2c2c2a;
+    --cdash-card: #2d2d2b;
+    --cdash-card-hover: #34342f;
+    --cdash-border: #3d3d38;
+
+    --cdash-text: #eaeae6;
+    --cdash-text-dim: #a3a39b;
+    --cdash-text-faint: #737369;
+
+    /* Badges d'icones : fond pastel clair + glyphe sature (mesure sur maquette) */
+    --cdash-purple-badge: #dde3f7; --cdash-purple-glyph: #4f46e5; --cdash-purple-accent: #6366f1;
+    --cdash-green-badge:  #e1f5df; --cdash-green-glyph:  #16a34a; --cdash-green-accent:  #22c55e;
+    --cdash-orange-badge: #faecd8; --cdash-orange-glyph: #d97706; --cdash-orange-accent: #f59e0b;
+    --cdash-violet-badge: #ede9fe; --cdash-violet-glyph: #7c3aed; --cdash-violet-accent: #8b5cf6;
+    --cdash-red-badge:    #fbe1e1; --cdash-red-glyph:    #dc2626; --cdash-red-accent:    #ef4444;
+    --cdash-blue-badge:   #dbeafe; --cdash-blue-glyph:   #2563eb; --cdash-blue-accent:   #3b82f6;
+
+    /* Cartes internes colorees (listes KPI ventes/achats/stock) : fond sombre teinte + accent gauche */
+    --cdash-green-dark:  #16241a; --cdash-orange-dark: #2b1f10; --cdash-red-dark: #2b1414;
+    --cdash-blue-dark:   #14202b; --cdash-purple-dark: #1c1a2e;
+
+    background: var(--cdash-bg);
+    min-height: 100vh;
+    padding: 0 0 32px 0;
+    font-family: var(--cdash-font);
+    color: var(--cdash-text);
+    box-sizing: border-box;
+}
+
+/* ══ TOPBAR ══ */
+.camlait_topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 26px; background: var(--cdash-bg-topbar);
+    border-bottom: 1px solid var(--cdash-border);
+}
+.camlait_topbar_left { display: flex; align-items: center; gap: 12px; }
+.camlait_logo_box {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--cdash-purple-badge); display: flex; align-items: center;
+    justify-content: center; color: var(--cdash-purple-glyph); font-size: 16px;
+    overflow: hidden; flex-shrink: 0;
+}
+.camlait_logo_box img { width: 100%; height: 100%; object-fit: cover; }
+.camlait_topbar_title h2 { margin: 0; font-size: 15px; font-weight: 700; color: #f5f5f2; }
+.camlait_subtitle { font-size: 11px; color: var(--cdash-text-faint); }
+.camlait_topbar_right { display: flex; align-items: center; gap: 8px; }
+
+/* ── Filtres de periode (boutons + menus deroulants) ─────────── */
+.camlait_period_btns { display: flex; align-items: center; gap: 6px; margin-right: 6px; }
+.camlait_period_btn {
+    background: var(--cdash-card); border: 1px solid var(--cdash-border);
+    color: var(--cdash-text-dim); padding: 6px 14px; border-radius: 6px;
+    font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s;
+}
+.camlait_period_btn.active, .camlait_period_btn:hover {
+    background: var(--cdash-purple-accent); color: #fff; border-color: var(--cdash-purple-accent);
+}
+.camlait_period_select {
+    background: var(--cdash-card); border: 1px solid var(--cdash-border);
+    color: var(--cdash-text); padding: 6px 10px; border-radius: 6px;
+    font-size: 12px; font-weight: 600; cursor: pointer; outline: none;
+    font-family: var(--cdash-font);
+}
+.camlait_period_select:hover, .camlait_period_select:focus { border-color: var(--cdash-purple-accent); }
+
+/* ── Plage de dates personnalisee ────────────────────────────── */
+.camlait_daterange_wrap { position: relative; }
+.camlait_daterange_panel {
+    position: absolute; top: 40px; right: 0; z-index: 60;
+    background: var(--cdash-card); border: 1px solid var(--cdash-border);
+    border-radius: 10px; padding: 14px; width: 260px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.camlait_daterange_field { margin-bottom: 10px; }
+.camlait_daterange_field label { display: block; font-size: 11px; color: var(--cdash-text-dim); margin-bottom: 4px; }
+.camlait_daterange_field input[type="date"] {
+    width: 100%; background: var(--cdash-bg); border: 1px solid var(--cdash-border);
+    border-radius: 6px; color: var(--cdash-text); padding: 7px 8px; font-size: 12px;
+    box-sizing: border-box; font-family: var(--cdash-font); outline: none;
+}
+.camlait_daterange_field input[type="date"]:focus { border-color: var(--cdash-purple-accent); }
+.camlait_daterange_error { color: var(--cdash-red-accent); font-size: 11px; margin-bottom: 8px; }
+.camlait_daterange_actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+
+.camlait_icon_btn {
+    position: relative; width: 34px; height: 34px; border-radius: 8px;
+    background: var(--cdash-card); border: 1px solid var(--cdash-border);
+    color: var(--cdash-text-dim); cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+}
+.camlait_icon_btn:hover { background: var(--cdash-card-hover); color: var(--cdash-text); }
+.camlait_icon_wrap { position: relative; }
+.camlait_icon_badge {
+    position: absolute; top: -4px; right: -4px; background: var(--cdash-red-accent);
+    color: #fff; font-size: 9px; font-weight: 700; border-radius: 8px; padding: 1px 5px;
+}
+
+/* ══ Panel notifications ══ */
+.camlait_notif_panel {
+    position: absolute; top: 44px; right: 0; width: 300px;
+    background: var(--cdash-card); border: 1px solid var(--cdash-border);
+    border-radius: 10px; padding: 10px; z-index: 50; max-height: 320px; overflow-y: auto;
+}
+.camlait_notif_header {
+    font-size: 11px; font-weight: 700; color: var(--cdash-text-dim);
+    margin-bottom: 8px; text-transform: uppercase;
+}
+.camlait_notif_empty { font-size: 12px; color: var(--cdash-text-faint); padding: 10px; text-align: center; }
+
+/* ══ Modale reglages ══ */
+.camlait_modal_overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    display: flex; align-items: center; justify-content: center; z-index: 100;
+}
+.camlait_modal { background: var(--cdash-card); border: 1px solid var(--cdash-border); border-radius: 12px; padding: 22px; width: 360px; }
+.camlait_modal h3 { margin: 0 0 16px; font-size: 15px; color: #f5f5f2; }
+.camlait_modal_field { margin-bottom: 14px; }
+.camlait_modal_field label { display: block; font-size: 12px; color: var(--cdash-text-dim); margin-bottom: 5px; }
+.camlait_modal_field input {
+    width: 100%; background: var(--cdash-bg); border: 1px solid var(--cdash-border);
+    border-radius: 6px; color: var(--cdash-text); padding: 8px; font-size: 13px; box-sizing: border-box;
+}
+.camlait_modal_actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.camlait_btn_secondary, .camlait_btn_primary { border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+.camlait_btn_secondary { background: #3d3d38; color: var(--cdash-text); }
+.camlait_btn_primary { background: var(--cdash-purple-accent); color: #fff; }
+.camlait_btn_primary:hover { background: #4f46e5; }
+
+/* ══ Onglets ══ */
+.camlait_tabs { display: flex; gap: 2px; padding: 0 26px; background: var(--cdash-bg-topbar); border-bottom: 1px solid var(--cdash-border); }
+.camlait_tab {
+    background: none; border: none; color: var(--cdash-text-dim); padding: 11px 16px;
+    font-size: 13px; cursor: pointer; border-bottom: 2px solid transparent;
+    display: flex; align-items: center; gap: 6px;
+}
+.camlait_tab:hover { color: var(--cdash-text); }
+.camlait_tab.active { color: var(--cdash-purple-accent); border-bottom-color: var(--cdash-purple-accent); }
+
+.camlait_period_label {
+    padding: 14px 26px 0; font-size: 11px; font-weight: 700;
+    color: var(--cdash-text-faint); letter-spacing: 0.06em;
+}
+
+/* ── Loader ─────────────────────────────────────────────────── */
+.camlait_loader {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    padding: 60px; color: var(--cdash-text-faint); font-size: 13px;
+}
+
+/* ══ Grille generale ══ */
+.camlait_cards_grid {
+    padding: 22px 26px 26px; display: grid; grid-template-columns: 1fr 1fr;
+    gap: 20px; align-items: start;
+}
+
+/* ══ KPI rangee de 4 (Vue globale) ══ */
+.camlait_kpi_row4 { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.camlait_kpi4_card {
+    background: var(--cdash-card); border: 1px solid var(--cdash-border);
+    border-radius: 12px; padding: 18px 16px; cursor: pointer; transition: border-color .15s;
+}
+.camlait_kpi4_card:hover { border-color: var(--cdash-purple-accent); }
+.camlait_kpi4_header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.camlait_kpi4_label { font-size: 11px; color: var(--cdash-text-dim); }
+
+/* Badges d'icone : pastel clair + glyphe sature, fideles a la maquette */
+.camlait_kpi4_icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+.camlait_icon_purple { background: var(--cdash-purple-badge); color: var(--cdash-purple-glyph); }
+.camlait_icon_green  { background: var(--cdash-green-badge);  color: var(--cdash-green-glyph); }
+.camlait_icon_orange { background: var(--cdash-orange-badge); color: var(--cdash-orange-glyph); }
+.camlait_icon_blue   { background: var(--cdash-violet-badge); color: var(--cdash-violet-glyph); }
+
+.camlait_kpi4_value { font-size: 26px; font-weight: 700; color: #f5f5f2; margin-bottom: 4px; }
+.camlait_kpi4_delta { font-size: 11px; margin-bottom: 8px; }
+.camlait_kpi4_delta.pos { color: var(--cdash-green-accent); }
+.camlait_kpi4_delta.neg { color: var(--cdash-orange-accent); }
+.camlait_kpi4_delta.neu { color: var(--cdash-text-dim); }
+.camlait_kpi4_progress { background: #3d3d38; border-radius: 3px; height: 4px; margin-bottom: 8px; }
+.camlait_kpi4_progress_fill { height: 100%; border-radius: 3px; }
+.camlait_prog_purple { background: linear-gradient(90deg, var(--cdash-purple-accent), #818cf8); }
+.camlait_prog_green  { background: linear-gradient(90deg, var(--cdash-green-accent), #4ade80); }
+.camlait_prog_orange { background: linear-gradient(90deg, var(--cdash-orange-accent), #fbbf24); }
+.camlait_prog_blue   { background: linear-gradient(90deg, var(--cdash-violet-accent), #a78bfa); }
+.camlait_kpi4_sub { font-size: 10px; color: var(--cdash-text-faint); }
+
+/* ══ Grilles generiques (2 et 3 colonnes) ══ */
+.camlait_row2 { grid-column: 1 / -1; display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; }
+.camlait_row3 { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+/* ── Carte generique ───────────────────────────────────────── */
+.camlait_card { background: var(--cdash-card); border: 1px solid var(--cdash-border); border-radius: 12px; padding: 20px 22px; }
+.camlait_card_wide { grid-column: 1 / -1; width: 100%; }
+.camlait_card_header { display: flex; align-items: center; gap: 10px; padding-bottom: 14px; margin-bottom: 18px; border-bottom: 1px solid var(--cdash-border); }
+.camlait_card_header h3 { margin: 0; font-size: 13px; font-weight: 600; color: #f5f5f2; letter-spacing: 0.01em; }
+.camlait_card_icon_wrap {
+    width: 28px; height: 28px; border-radius: 6px; background: #3d3d38;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--cdash-text-dim); font-size: 13px; flex-shrink: 0;
+}
+.camlait_link { font-size: 11px; color: var(--cdash-purple-accent); cursor: pointer; margin-left: auto; }
+.camlait_link:hover { text-decoration: underline; }
+
+/* ── Grille KPI interne — 3 colonnes (onglets Ventes/Achats) ── */
+.camlait_kpi_grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+.camlait_stock_grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+.camlait_kpi_wide { grid-column: 1 / 3; }
+.camlait_kpi_full { grid-column: 1 / -1; }
+
+/* ── Bouton KPI (cartes internes onglets) : fond sombre teinte + accent gauche ── */
+.camlait_kpi_btn {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+    padding: 12px 14px; border-radius: 8px; cursor: pointer; border: none;
+    text-align: left; transition: filter 0.15s ease, transform 0.1s ease; min-height: 76px;
+}
+.camlait_kpi_btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+
+.camlait_kpi_purple  { background: var(--cdash-purple-dark); border-left: 3px solid var(--cdash-purple-accent); }
+.camlait_kpi_green   { background: var(--cdash-green-dark);  border-left: 3px solid var(--cdash-green-accent); }
+.camlait_kpi_orange  { background: var(--cdash-orange-dark); border-left: 3px solid var(--cdash-orange-accent); }
+.camlait_kpi_red     { background: var(--cdash-red-dark);    border-left: 3px solid var(--cdash-red-accent); }
+.camlait_kpi_blue    { background: var(--cdash-blue-dark);   border-left: 3px solid var(--cdash-blue-accent); }
+.camlait_kpi_neutral { background: #262622; border-left: 3px solid #6b6b62; }
+
+.camlait_kpi_icon_row { display: flex; align-items: center; gap: 7px; width: 100%; }
+.camlait_kpi_fa { font-size: 13px; width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.camlait_kpi_purple  .camlait_kpi_fa { background: var(--cdash-purple-badge); color: var(--cdash-purple-glyph); }
+.camlait_kpi_green   .camlait_kpi_fa { background: var(--cdash-green-badge);  color: var(--cdash-green-glyph); }
+.camlait_kpi_orange  .camlait_kpi_fa { background: var(--cdash-orange-badge); color: var(--cdash-orange-glyph); }
+.camlait_kpi_red     .camlait_kpi_fa { background: var(--cdash-red-badge);    color: var(--cdash-red-glyph); }
+.camlait_kpi_blue    .camlait_kpi_fa { background: var(--cdash-blue-badge);   color: var(--cdash-blue-glyph); }
+.camlait_kpi_neutral .camlait_kpi_fa { background: #3d3d38; color: var(--cdash-text-dim); }
+
+.camlait_kpi_label { font-size: 10px; color: var(--cdash-text-dim); line-height: 1.3; font-weight: 500; letter-spacing: 0.01em; }
+.camlait_kpi_value { font-size: 26px; font-weight: 700; color: #f5f5f2; line-height: 1; padding-left: 2px; }
+.camlait_kpi_large { font-size: 28px; }
+.camlait_kpi_unit { font-size: 11px; font-weight: 400; color: var(--cdash-text-faint); margin-left: 3px; }
+
+.camlait_ca_row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.camlait_delta { font-size: 11px; font-weight: 600; }
+.camlait_delta.pos { color: var(--cdash-green-accent); }
+.camlait_delta.neg { color: var(--cdash-red-accent); }
+.camlait_delta i { margin-right: 3px; }
+
+/* ── Barres de progression ──────────────────────────────────── */
+.camlait_progress_section { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--cdash-border); }
+.camlait_progress_item { width: 100%; }
+.camlait_progress_label { display: flex; justify-content: space-between; font-size: 11px; color: var(--cdash-text-dim); margin-bottom: 5px; font-weight: 500; }
+.camlait_progress_pct { font-weight: 700; color: var(--cdash-text); }
+.camlait_progress_bg { background: #3d3d38; border-radius: 4px; height: 5px; overflow: hidden; }
+.camlait_progress_fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; min-width: 3px; }
+.camlait_bar_green  { background: linear-gradient(90deg, var(--cdash-green-accent), #4ade80); }
+.camlait_bar_blue   { background: linear-gradient(90deg, var(--cdash-violet-accent), #a78bfa); }
+.camlait_bar_red    { background: linear-gradient(90deg, var(--cdash-red-accent), #f87171); }
+.camlait_bar_orange { background: linear-gradient(90deg, var(--cdash-orange-accent), #fbbf24); }
+
+/* ── Tableau (Top 5, commandes recentes) ─────────────────────── */
+.camlait_table { width: 100%; border-collapse: collapse; }
+.camlait_table thead tr { border-bottom: 1px solid var(--cdash-border); }
+.camlait_table th { font-size: 9px; font-weight: 700; color: var(--cdash-text-faint); padding: 0 8px 8px; letter-spacing: 0.08em; text-transform: uppercase; }
+.camlait_table td { font-size: 12px; color: #d8d8d2; padding: 9px 8px; border-bottom: 1px solid #232320; }
+.camlait_table tr:last-child td { border-bottom: none; }
+.camlait_table tr:hover td { background: #262622; }
+.camlait_th_right, .camlait_td_right { text-align: right; }
+.camlait_link_cell { color: var(--cdash-purple-accent); cursor: pointer; }
+.camlait_tr_hover { cursor: pointer; }
+
+.camlait_badge_ca {
+    display: inline-block; background: var(--cdash-blue-badge); color: var(--cdash-blue-glyph);
+    padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600;
+}
+
+/* ── Listes compactes (Vue globale) ──────────────────────────── */
+.camlait_compact_list { display: flex; flex-direction: column; gap: 2px; }
+.camlait_compact_row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 4px; font-size: 12px; color: #d8d8d2; cursor: pointer;
+    border-bottom: 1px solid #232320;
+}
+.camlait_compact_row:hover { background: #262622; }
+.camlait_compact_row strong { color: #f5f5f2; }
+.camlait_txt_green  { color: var(--cdash-green-accent); }
+.camlait_txt_orange { color: var(--cdash-orange-accent); }
+.camlait_txt_red    { color: var(--cdash-red-accent); }
+.camlait_txt_blue   { color: var(--cdash-violet-accent); }
+
+/* ── Statuts (livre/en cours/retard...) ──────────────────────── */
+.camlait_statut { display: inline-block; padding: 3px 9px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+.camlait_statut_livre    { background: var(--cdash-green-badge);  color: #14532d; }
+.camlait_statut_en_cours { background: var(--cdash-blue-badge);   color: #1e3a8a; }
+.camlait_statut_facture  { background: var(--cdash-purple-badge); color: #312e81; }
+.camlait_statut_retard   { background: var(--cdash-red-badge);    color: #7f1d1d; }
+.camlait_statut_annule   { background: #3d3d38; color: var(--cdash-text-dim); }
+
+.camlait_statuts_section { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--cdash-border); }
+.camlait_statuts_title { font-size: 11px; color: var(--cdash-text-dim); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.camlait_statuts_list { display: flex; flex-wrap: wrap; gap: 8px; }
+.camlait_statut_badge { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 600; }
+.camlait_statut_ok     { background: var(--cdash-green-badge);  color: #14532d; }
+.camlait_statut_warn   { background: var(--cdash-orange-badge); color: #7c2d12; }
+.camlait_statut_danger { background: var(--cdash-red-badge);    color: #7f1d1d; }
+
+/* ── Alertes generales & notifications (fond sombre teinte + accent gauche) ── */
+.camlait_alertes_list { display: flex; flex-direction: column; gap: 8px; }
+.camlait_alerte { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 12px; }
+.camlait_alerte_danger  { background: var(--cdash-red-dark);    border-left: 3px solid var(--cdash-red-accent); }
+.camlait_alerte_warning { background: var(--cdash-orange-dark); border-left: 3px solid var(--cdash-orange-accent); }
+.camlait_alerte_info    { background: var(--cdash-blue-dark);   border-left: 3px solid var(--cdash-violet-accent); }
+.camlait_alerte_icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+.camlait_alerte_danger  .camlait_alerte_icon { color: var(--cdash-red-accent); }
+.camlait_alerte_warning .camlait_alerte_icon { color: var(--cdash-orange-accent); }
+.camlait_alerte_info    .camlait_alerte_icon { color: var(--cdash-violet-accent); }
+.camlait_alerte_msg { color: #d8d8d2; line-height: 1.4; }
+
+.camlait_badge_urgence {
+    background: var(--cdash-red-accent); color: #fff; padding: 3px 10px; border-radius: 10px;
+    font-size: 11px; font-weight: 700; margin-left: auto;
+}
+
+/* ── Maintenance : liste demandes urgentes ───────────────────── */
+.camlait_maint_alertes { display: flex; flex-direction: column; gap: 8px; }
+.camlait_maint_alerte_row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; background: var(--cdash-red-dark); }
+.camlait_maint_alerte_icon { color: var(--cdash-red-accent); font-size: 13px; }
+.camlait_maint_alerte_body { display: flex; flex-direction: column; }
+.camlait_maint_alerte_name { font-size: 12px; color: #f5f5f2; font-weight: 600; }
+.camlait_maint_alerte_equip { font-size: 11px; color: var(--cdash-text-dim); }
+
+/* ── Donut / repartition CA par canal ─────────────────────────── */
+.camlait_donut_wrap { display: flex; align-items: center; gap: 16px; }
+.camlait_donut_canvas_wrap { position: relative; width: 180px; height: 180px; flex-shrink: 0; }
+.camlait_donut_center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.camlait_donut_pct { font-size: 16px; font-weight: 700; color: #f5f5f2; }
+.camlait_donut_pct_label { font-size: 9px; color: var(--cdash-text-faint); }
+.camlait_donut_legend { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.camlait_donut_item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--cdash-text-dim); }
+.camlait_donut_item strong { color: #f5f5f2; margin-left: auto; }
+.camlait_dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── Graphiques (chart.js) ────────────────────────────────────── */
+.camlait_chart_wrap { position: relative; height: 320px; }
+.camlait_chart_wrap canvas { width: 100% !important; height: 100% !important; }
+.camlait_top5_chart_wrap { height: 120px; margin-top: 10px; }
+.camlait_top5_chart_wrap canvas { width: 100% !important; height: 100% !important; }
+
+/* ── Message absence de donnees ────────────────────────────────── */
+.camlait_no_data {
+    display: flex; align-items: center; gap: 10px; padding: 30px 16px;
+    color: var(--cdash-text-faint); font-size: 12px; font-style: italic;
+    justify-content: center; text-align: center;
+}
+.camlait_no_data i { font-size: 16px; color: #52524a; }
+.camlait_empty { text-align: center; color: #52524a; padding: 20px; font-size: 12px; font-style: italic; }
+
+/* ── Scroll (Odoo 15 bloque le scroll sur ces conteneurs) ─────── */
+.o_action_manager, .o_action_manager > .o_action, .o_view_controller, .o_content {
+    overflow: visible !important; height: auto !important; min-height: 0 !important;
+}
+.o_main_navbar ~ .o_action_manager {
+    overflow-y: auto !important; height: calc(100vh - 46px) !important;
+}
+
+/* ── Impression propre (fond blanc, chrome masque) ────────────── */
+@media print {
+    .camlait_topbar_right, .camlait_tabs { display: none !important; }
+    .camlait_dashboard_root { background: #ffffff !important; }
+    .camlait_topbar { background: #ffffff !important; border-bottom: 1px solid #ccc; }
+    .camlait_topbar_title h2, .camlait_subtitle { color: #111 !important; }
+    .camlait_card, .camlait_kpi4_card {
+        background: #ffffff !important; border: 1px solid #d0d0d0 !important; break-inside: avoid;
+    }
+}

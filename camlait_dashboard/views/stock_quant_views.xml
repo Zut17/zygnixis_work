@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue pivot : met en evidence la valeur et la quantite du stock, par produit -->
+    <record id="camlait_view_stock_quant_pivot" model="ir.ui.view">
+        <field name="name">camlait.stock.quant.pivot</field>
+        <field name="model">stock.quant</field>
+        <field name="arch" type="xml">
+            <pivot string="Valeur du stock">
+                <field name="product_id" type="row"/>
+                <field name="location_id" type="col"/>
+                <field name="camlait_valeur_stock" type="measure"/>
+                <field name="quantity" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Vue graphique : repartition de la valeur du stock par produit -->
+    <record id="camlait_view_stock_quant_graph" model="ir.ui.view">
+        <field name="name">camlait.stock.quant.graph</field>
+        <field name="model">stock.quant</field>
+        <field name="arch" type="xml">
+            <graph string="Valeur du stock" type="bar">
+                <field name="product_id" type="row"/>
+                <field name="camlait_valeur_stock" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Vue liste : quantite et valeur cote a cote, pour le detail produit par produit -->
+    <record id="camlait_view_stock_quant_list" model="ir.ui.view">
+        <field name="name">camlait.stock.quant.list</field>
+        <field name="model">stock.quant</field>
+        <field name="arch" type="xml">
+            <tree string="Valeur du stock" create="0">
+                <field name="product_id"/>
+                <field name="location_id"/>
+                <field name="quantity" string="Quantite"/>
+                <field name="camlait_valeur_stock" string="Valeur du stock" sum="Total"/>
+            </tree>
+        </field>
+    </record>
+</odoo>
