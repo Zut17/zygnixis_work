@@ -796,10 +796,14 @@ class CamlaitDashboard(models.TransientModel):
             'views': [(False, 'pivot'), (False, 'graph'), (False, 'list')],
             'domain': domain, 'target': 'current',
             'context': {
-                # Met en evidence le meme montant que "Montant total engage"
-                # (calcule a partir de price_subtotal des lignes de BdC).
-                'pivot_measures': ['price_subtotal'],
-                'graph_measure': 'price_subtotal',
+                # NB : purchase.report n'a pas de champ "price_subtotal"
+                # (contrairement a sale.report) -- forcer cette mesure
+                # faisait planter le pivot (TypeError: Cannot read
+                # properties of undefined (reading 'string')). Le champ
+                # equivalent au montant HT des lignes de BdC sur ce modele
+                # s'appelle "price_total".
+                'pivot_measures': ['price_total'],
+                'graph_measure': 'price_total',
             },
         }
 
