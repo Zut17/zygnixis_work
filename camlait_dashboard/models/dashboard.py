@@ -261,6 +261,53 @@ class CamlaitDashboard(models.TransientModel):
             'has_data':          activite_totale > 0,
         }
 
+    @api.model
+    def get_stock_rotation_detail(self):
+        """Justifie le KPI 'Rotation moy. stock' : reprend EXACTEMENT le meme
+        calcul que 'rotation_stock' dans _get_stock() (stock total / sorties
+        moyennes par jour sur les 30 derniers jours) et fournit en plus le
+        detail des mouvements de sortie qui composent ce calcul."""
+        today     = date.today()
+        str_today = today.strftime('%Y-%m-%d 23:59:59')
+        loc_ids   = self._get_target_location_ids()
+
+        all_quants = self.env['stock.quant'].search([
+            ('location_id', 'in', loc_ids),
+            ('product_id.type', '=', 'product'),
+        ]) if loc_ids else self.env['stock.quant']
+        stock_total_qty = sum(q.quantity for q in all_quants if q.quantity > 0)
+
+        date_30j  = (today - timedelta(days=30)).strftime('%Y-%m-%d 00:00:00')
+        moves_out = self.env['stock.move'].search([
+            ('state', '=', 'done'),
+            ('location_id', 'in', loc_ids),
+            ('location_dest_id.usage', '=', 'customer'),
+            ('date', '>=', date_30j),
+            ('date', '<=', str_today),
+        ], order='date desc')
+
+        sorties_30j  = sum(m.product_qty for m in moves_out)
+        sorties_jour = sorties_30j / 30 if sorties_30j > 0 else 0
+        rotation     = round(stock_total_qty / sorties_jour) if sorties_jour > 0 else 0
+
+        detail = [{
+            'move_id':  m.id,
+            'date':     fields.Datetime.to_string(m.date) if m.date else '',
+            'produit':  m.product_id.display_name,
+            'qty':      m.product_qty,
+            'origine':  m.reference or m.origin or '',
+        } for m in moves_out]
+
+        return {
+            'recap': {
+                'stock_total_qty': round(stock_total_qty, 2),
+                'sorties_30j':     round(sorties_30j, 2),
+                'sorties_jour':    round(sorties_jour, 2),
+                'rotation':        rotation,
+                'nb_mouvements':   len(moves_out),
+            },
+            'detail': detail,
+        }
     # ════════════════════════════════════════════════════════════════
     # ACHATS PAR CATEGORIE
     # ════════════════════════════════════════════════════════════════
@@ -796,14 +843,10 @@ class CamlaitDashboard(models.TransientModel):
             'views': [(False, 'pivot'), (False, 'graph'), (False, 'list')],
             'domain': domain, 'target': 'current',
             'context': {
-                # NB : purchase.report n'a pas de champ "price_subtotal"
-                # (contrairement a sale.report) -- forcer cette mesure
-                # faisait planter le pivot (TypeError: Cannot read
-                # properties of undefined (reading 'string')). Le champ
-                # equivalent au montant HT des lignes de BdC sur ce modele
-                # s'appelle "price_total".
-                'pivot_measures': ['price_total'],
-                'graph_measure': 'price_total',
+                # Met en evidence le meme montant que "Montant total engage"
+                # (calcule a partir de price_subtotal des lignes de BdC).
+                'pivot_measures': ['price_subtotal'],
+                'graph_measure': 'price_subtotal',
             },
         }
 

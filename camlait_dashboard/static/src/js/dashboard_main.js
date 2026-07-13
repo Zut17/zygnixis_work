@@ -259,7 +259,7 @@ const TEMPLATE = xml`
                 <div class="camlait_loader"><i class="fa fa-spin fa-circle-o-notch fa-lg"/> Chargement...</div>
             </t>
             <t t-else="">
-                <h4>Recapitulatif mensuel</h4>
+                <h4>Recapitulatif mensuel (justifie le graphique)</h4>
                 <table class="camlait_table">
                     <thead><tr><th>MOIS</th><th class="camlait_th_right">CA</th><th class="camlait_th_right">NB COMMANDES</th></tr></thead>
                     <tbody>
@@ -294,6 +294,53 @@ const TEMPLATE = xml`
             </t>
             <div class="camlait_modal_actions">
                 <button class="camlait_btn_secondary" t-on-click="closeEvolutionDetail">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- ═══ MODALE DETAIL ROTATION MOY. STOCK ═══ -->
+    <div class="camlait_modal_overlay" t-if="state.showStockRotationDetail" t-on-click="closeStockRotationDetail">
+        <div class="camlait_modal camlait_modal_wide" t-on-click.stop="doNothing">
+            <h3>Rotation moy. stock</h3>
+            <t t-if="state.stockRotationDetailLoading">
+                <div class="camlait_loader"><i class="fa fa-spin fa-circle-o-notch fa-lg"/> Chargement...</div>
+            </t>
+            <t t-else="">
+                <h4>Analyse</h4><br/>
+                <table class="camlait_table">
+                    <thead><tr><th>STOCK TOTAL (qte)</th><th>SORTIES 30 DERNIERS JOURS (qte)</th><th>SORTIES MOY. / JOUR</th><th>ROTATION</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td><t t-esc="state.stockRotationDetail.recap.stock_total_qty"/></td>
+                            <td><t t-esc="state.stockRotationDetail.recap.sorties_30j"/></td>
+                            <td><t t-esc="state.stockRotationDetail.recap.sorties_jour"/></td>
+                            <td><strong><t t-esc="state.stockRotationDetail.recap.rotation"/> j</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="camlait_modal_note">Sur la base de <t t-esc="state.stockRotationDetail.recap.nb_mouvements"/> mouvement(s) de sortie vers l'exterieur.</p>
+
+                <br/>
+                <h4>Detail des sorties (30 derniers jours)</h4><br/>
+                <table class="camlait_table">
+                    <thead><tr><th>DATE</th><th>PRODUIT</th><th class="camlait_th_right">QTE</th><th>ORIGINE</th></tr></thead>
+                    <tbody>
+                        <t t-foreach="state.stockRotationDetail.detail" t-as="d" t-key="d.move_id">
+                            <tr>
+                                <td><t t-esc="d.date"/></td>
+                                <td><t t-esc="d.produit"/></td>
+                                <td class="camlait_td_right"><t t-esc="d.qty"/></td>
+                                <td><t t-esc="d.origine"/></td>
+                            </tr>
+                        </t>
+                        <t t-if="!state.stockRotationDetail.detail.length">
+                            <tr><td colspan="4" class="camlait_empty">Aucune sortie de stock sur cette periode.</td></tr>
+                        </t>
+                    </tbody>
+                </table>
+            </t>
+            <div class="camlait_modal_actions">
+                <button class="camlait_btn_secondary" t-on-click="closeStockRotationDetail">Fermer</button>
             </div>
         </div>
     </div>
@@ -501,7 +548,7 @@ const TEMPLATE = xml`
                         <span><i class="fa fa-times-circle camlait_txt_red"/> Ruptures</span>
                         <strong><t t-esc="state.stock.ruptures"/> ref.</strong>
                     </div>
-                    <div class="camlait_compact_row">
+                    <div class="camlait_compact_row" t-on-click="openStockRotation">
                         <span><i class="fa fa-refresh"/> Rotation moy. stock</span>
                         <strong><t t-esc="state.stock.rotation_stock"/> j</strong>
                     </div>
@@ -1010,6 +1057,9 @@ class CamlaitDashboard extends Component {
             achats: { bdc_valides:0, bdc_en_attente:0, bdc_en_retard:0, montant_total_engage:0, fournisseurs_actifs:0, taux_reception_delais:0, budget_consomme:0, has_data:true },
             ventes: { ca_total:0, ca_delta:0, objectif_ca:197000000, commandes_confirmees:0, cmd_delta:0, panier_moyen:0, panier_delta:0, commandes_livrees:0, taux_livraison:0, en_attente:0, en_retard:0, top5:[], evolution:[], has_data:true },
             stock: { produits_en_stock:0, sous_seuil:0, ruptures:0, rotation_stock:0, taux_dispo:0, valeur_stock:0, pct_perime:0, nb_perime:0, statuts:[] },
+            showStockRotationDetail: false,
+            stockRotationDetailLoading: false,
+            stockRotationDetail: { recap: { stock_total_qty:0, sorties_30j:0, sorties_jour:0, rotation:0, nb_mouvements:0 }, detail: [] },
             maintenance: { total:0, en_cours:0, terminees:0, urgentes:0, equipements:0, mtbf_moy:0, alertes_maint:[] },
             commandes_recentes: [],
             alertes: [],
@@ -1727,11 +1777,18 @@ class CamlaitDashboard extends Component {
     // (mouvements vers l'exterieur) des 30 derniers jours : le detail doit
     // donc montrer ces mouvements, plutot que la liste des produits en stock.
     async openStockRotation() {
+        this.state.showStockRotationDetail = true;
+        this.state.stockRotationDetailLoading = true;
         try {
-            const action = await this._rpc('camlait.dashboard', 'action_open_stock_rotation', {});
-            this.actionService.doAction(action);
-        } catch(e) { console.error(e); }
+            const result = await this._rpc('camlait.dashboard', 'get_stock_rotation_detail', {});
+            this.state.stockRotationDetail = result;
+        } catch (e) {
+            console.error(e);
+        } finally {
+            this.state.stockRotationDetailLoading = false;
+        }
     }
+    closeStockRotationDetail() { this.state.showStockRotationDetail = false; }
     async openStockAlert() {
         try {
             const action = await this._rpc('camlait.dashboard', 'action_open_stock_alert', {});
