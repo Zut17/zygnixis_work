@@ -259,7 +259,7 @@ const TEMPLATE = xml`
                 <div class="camlait_loader"><i class="fa fa-spin fa-circle-o-notch fa-lg"/> Chargement...</div>
             </t>
             <t t-else="">
-                <h4>Recapitulatif mensuel (justifie le graphique)</h4>
+                <h4>Recapitulatif mensuel</h4>
                 <table class="camlait_table">
                     <thead><tr><th>MOIS</th><th class="camlait_th_right">CA</th><th class="camlait_th_right">NB COMMANDES</th></tr></thead>
                     <tbody>
