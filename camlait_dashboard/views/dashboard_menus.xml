@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="action_camlait_owl_dashboard" model="ir.actions.client">
+    <record id="camlait_dashboard_action" model="ir.actions.client">
         <field name="name">Camlait Dashboard</field>
         <field name="tag">camlait_dashboard_owl_action_main</field>
     </record>
-
-    <menuitem id="menu_camlait_dashboard_root" name="Camlait Dashboard"
-              action="action_camlait_owl_dashboard"
+    <menuitem id="menu_camlait_dashboard_root" 
+              name="Camlait Dashboard"
+              action="camlait_dashboard_action"
               web_icon="camlait_dashboard,static/description/icon.png"
               sequence="2"/>
 </odoo>
