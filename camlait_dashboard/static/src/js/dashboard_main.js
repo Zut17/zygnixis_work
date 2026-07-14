@@ -301,7 +301,7 @@ const TEMPLATE = xml`
                     <thead><tr><th>PRODUIT</th><th class="camlait_th_right">QTE</th><th class="camlait_th_right">CA</th></tr></thead>
                     <tbody>
                         <t t-foreach="state.ventes.top5" t-as="prod">
-                            <tr>
+                            <tr class="camlait_tr_hover" t-on-click="openProduct(prod.product_id)">
                                 <td><t t-esc="prod.name"/></td>
                                 <td class="camlait_td_right"><t t-esc="formatQty(prod.qty)"/></td>
                                 <td class="camlait_td_right"><span class="camlait_badge_ca"><t t-esc="formatAmount(prod.ca)"/></span></td>
