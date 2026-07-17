@@ -193,7 +193,7 @@ const TEMPLATE = xml`
                     <span class="camlait_kpi4_label">Chiffre d'affaires</span>
                     <span class="camlait_kpi4_icon camlait_icon_purple"><i class="fa fa-line-chart"/></span>
                 </div>
-                <div class="camlait_kpi4_value"><t t-esc="formatAmount(state.ventes.ca_total)"/> M</div>
+                <div class="camlait_kpi4_value"><t t-esc="formatAmount(state.ventes.ca_total)"/></div>
                 <div t-att-class="'camlait_kpi4_delta ' + (state.ventes.ca_delta>=0?'pos':'neg')">
                     <i t-att-class="'fa ' + (state.ventes.ca_delta>=0?'fa-arrow-up':'fa-arrow-down')"/>
                     <t t-esc="(state.ventes.ca_delta>=0?'+':'') + state.ventes.ca_delta"/>% vs periode prec.
@@ -236,7 +236,7 @@ const TEMPLATE = xml`
                     <span class="camlait_kpi4_label">Valeur stock actuel</span>
                     <span class="camlait_kpi4_icon camlait_icon_blue"><i class="fa fa-cubes"/></span>
                 </div>
-                <div class="camlait_kpi4_value"><t t-esc="formatAmount(state.stock.valeur_stock)"/> M</div>
+                <div class="camlait_kpi4_value"><t t-esc="formatAmount(state.stock.valeur_stock)"/></div>
                 <div class="camlait_kpi4_delta neu">Stable</div>
                 <div class="camlait_kpi4_progress">
                     <div class="camlait_kpi4_progress_fill camlait_prog_blue" t-att-style="'width:' + state.stock.taux_dispo + '%'"/>
